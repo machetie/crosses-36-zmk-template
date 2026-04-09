@@ -4,6 +4,7 @@
  */
 
 #include "crosses.dtsi"
+#include "split_input_common.dtsi"
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 
 &thirty_six_transform {
@@ -21,13 +22,13 @@
     ;
 };
 
-// Right half sends its trackball via trackball_right_split (reg 1) to dongle
+// Assign physical device to right split node; processors defined in split_input_common.dtsi
 &trackball_right_split {
   device = <&trackball_central>;
   input-processors = <&zip_ble_report_rate_limit>;
 };
 
-// Disable left trackball split on right half (not used here)
+// Left trackball split not used on right half
 &trackball_peripheral_split {
   status = "disabled";
 };

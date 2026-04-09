@@ -1,7 +1,8 @@
- #include <dt-bindings/zmk/matrix_transform.h>
- #include <physical_layouts.dtsi>
+#include <dt-bindings/zmk/matrix_transform.h>
+#include <physical_layouts.dtsi>
+#include "../crosses/split_input_common.dtsi"
 
- / {
+/ {
     chosen {
         zmk,kscan = &mock_kscan;
         zmk,physical-layout = &gggw_crosses_36_layout;
@@ -12,37 +13,6 @@
         columns = <0>;
         rows = <0>;
         events = <0>;
-    };
-
-    split_inputs {
-        #address-cells = <1>;
-        #size-cells = <0>;
-
-        // Left half trackball (reg 0)
-        trackball_peripheral_split: trackball_peripheral_split@0 {
-            compatible = "zmk,input-split";
-            reg = <0>;
-        };
-
-        // Right half trackball (reg 1)
-        trackball_right_split: trackball_right_split@1 {
-            compatible = "zmk,input-split";
-            reg = <1>;
-        };
-    };
-
-    // Listener for left half trackball
-    trackball_left_listener: trackball_left_listener {
-        compatible = "zmk,input-listener";
-        status = "okay";
-        device = <&trackball_peripheral_split>;
-    };
-
-    // Listener for right half trackball
-    trackball_right_listener: trackball_right_listener {
-        compatible = "zmk,input-listener";
-        status = "okay";
-        device = <&trackball_right_split>;
     };
 
     crosses_dongle_transform: keymap_transform_dongle {
@@ -69,4 +39,13 @@
                <&key_physical_attrs 100 100 812 238 0 0 0>, <&key_physical_attrs 100 100 912 225 0 0 0>, <&key_physical_attrs 100 100 1012 200 0 0 0>, <&key_physical_attrs 100 100 1112 262 0 0 0>, <&key_physical_attrs 100 100 1212 312 0 0 0>,
                <&key_physical_attrs 100 100 250 372 0 0 0>, <&key_physical_attrs 100 100 350 372 0 0 0>, <&key_physical_attrs 100 100 450 372 0 0 0>, <&key_physical_attrs 100 100 750 372 0 0 0>, <&key_physical_attrs 100 100 850 372 0 0 0>, <&key_physical_attrs 100 100 950 372 0 0 0>;
     };
+};
+
+// Enable both trackball listeners on the dongle (central side)
+&trackball_left_listener {
+    status = "okay";
+};
+
+&trackball_right_listener {
+    status = "okay";
 };

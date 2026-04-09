@@ -1,0 +1,43 @@
+/*
+ * Copyright (c) 2025 Vincent Franco
+ * SPDX-License-Identifier: MIT
+ */
+#include <dt-bindings/zmk/input_transform.h>
+#include <input/processors.dtsi>
+#include <input/processors/report_rate_limit.dtsi>
+
+/ {
+    split_inputs {
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        // Left half trackball (peripheral → dongle via reg 0)
+        trackball_peripheral_split: trackball_peripheral_split@0 {
+            compatible = "zmk,input-split";
+            reg = <0>;
+        };
+
+        // Right half trackball (peripheral → dongle via reg 1)
+        trackball_right_split: trackball_right_split@1 {
+            compatible = "zmk,input-split";
+            reg = <1>;
+        };
+    };
+
+    // Left trackball listener — scroll only on all layers (dongle enables this)
+    trackball_left_listener: trackball_left_listener {
+        compatible = "zmk,input-listener";
+        status = "disabled";
+        device = <&trackball_peripheral_split>;
+        input-processors
+            = <&zip_xy_to_scroll_mapper>
+            , <&zip_scroll_scaler 1 2>;
+    };
+
+    // Right trackball listener — cursor movement on all layers (dongle enables this)
+    trackball_right_listener: trackball_right_listener {
+        compatible = "zmk,input-listener";
+        status = "disabled";
+        device = <&trackball_right_split>;
+    };
+};
