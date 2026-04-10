@@ -30,8 +30,7 @@
         status = "disabled";
         device = <&trackball_peripheral_split>;
         input-processors
-            = <&zip_ble_report_rate_limit>
-            , <&zip_xy_to_scroll_mapper>
+            = <&zip_xy_to_scroll_mapper>
             , <&zip_scroll_scaler 1 2>;
     };
 
@@ -40,6 +39,5 @@
         compatible = "zmk,input-listener";
         status = "disabled";
         device = <&trackball_right_split>;
-        input-processors = <&zip_ble_report_rate_limit>;
     };
 };
