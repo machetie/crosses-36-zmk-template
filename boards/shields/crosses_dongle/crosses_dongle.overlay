@@ -44,14 +44,8 @@
 // Enable both trackball listeners on the dongle (central side)
 &trackball_left_listener {
     status = "okay";
-    input-processors
-        = <&zip_report_rate_limit>
-        , <&zip_xy_to_scroll_mapper>
-        , <&zip_scroll_scaler 1 2>;
 };
 
 &trackball_right_listener {
     status = "okay";
-    input-processors
-        = <&zip_report_rate_limit>;
 };
