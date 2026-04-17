@@ -25,7 +25,7 @@
 // Assign physical device to right split node; processors defined in split_input_common.dtsi
 &trackball_right_split {
   device = <&trackball_central>;
-  input-processors = <&zip_ble_report_rate_limit>;
+  input-processors = <&zip_ble_report_rate_limit>, <&zip_xyz>;
 };
 
 // Left trackball split not used on right half

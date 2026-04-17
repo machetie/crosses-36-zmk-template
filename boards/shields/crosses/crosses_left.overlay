@@ -39,7 +39,7 @@
 // Assign physical device to left split node; processors defined in split_input_common.dtsi
 &trackball_peripheral_split {
   device = <&trackball_peripheral>;
-  input-processors = <&zip_ble_report_rate_limit>;
+  input-processors = <&zip_ble_report_rate_limit>, <&zip_xyz>;
 };
 
 // Right trackball split not used on left half
