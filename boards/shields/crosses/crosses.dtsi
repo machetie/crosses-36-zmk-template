@@ -43,11 +43,11 @@
       ;
   };
 
-	behaviors {
+  behaviors {
     rrl {
       #binding-cells = <1>;
       values-ms = <8 6 4 2>;
-		};
+    };
   };
 
 };

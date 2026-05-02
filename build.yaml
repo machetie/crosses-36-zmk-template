@@ -7,10 +7,11 @@ include:
   - board: xiao_ble//zmk
     shield: crosses_dongle dongle_screen
     snippet: studio-rpc-usb-uart
-    cmake-args: -DCONFIG_ZMK_STUDIO=y
+    cmake-args: -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=y -DCONFIG_ZMK_STUDIO=y
     artifact-name: crosses_dongle_studio
   - board: xiao_ble//zmk
     shield: crosses_dongle dongle_screen
+    cmake-args: -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=y
     artifact-name: crosses_dongle_boot
   - board: xiao_ble//zmk
     shield: settings_reset
