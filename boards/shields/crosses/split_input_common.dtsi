@@ -4,6 +4,7 @@
  */
 #include <input/processors.dtsi>
 #include <input/processors/report_rate_limit.dtsi>
+#include <dt-bindings/zmk/input_transform.h>
 
 / {
     split_inputs {
@@ -30,7 +31,8 @@
         device = <&trackball_peripheral_split>;
         input-processors
             = <&zip_xy_to_scroll_mapper>
-            , <&zip_scroll_scaler 1 4>;
+            , <&zip_scroll_scaler 1 4>
+            , <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
     };
 
     // Right trackball listener — cursor movement on all layers (dongle enables this)
