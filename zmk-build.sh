@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 # Quick local ZMK build helper
-# Usage: ./zmk-build.sh <shield> [board]
+# Usage: ./zmk-build.sh <shield> [board] [snippet]
 # Examples:
 #   ./zmk-build.sh crosses_left
 #   ./zmk-build.sh crosses_right
-#   ./zmk-build.sh "crosses_dongle dongle_screen" xiao_ble//zmk
+#   ./zmk-build.sh "crosses_dongle dongle_screen" xiao_ble//zmk studio-rpc-usb-uart
 #   ./zmk-build.sh crosses_dongle_bios xiao_ble//zmk
 
 set -e
 
 SHIELD="${1:-crosses_left}"
 BOARD="${2:-nice_nano@2//zmk}"
-BUILD_DIR="build/$(echo "$SHIELD" | tr ' ' '_')_$(echo "$BOARD" | tr '/@' '__')"
+SNIPPET="${3:-}"
+BUILD_DIR="build/$(echo "$SHIELD" | tr ' ' '_')_$(echo "$BOARD" | tr '/@' '__')${SNIPPET:+_${SNIPPET//-/_}}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 VENV="$HOME/Documents/git/zmk-workspace-venv"
@@ -37,8 +38,16 @@ git -C "$SCRIPT_DIR" checkout-index -a --prefix="$STAGING_DIR/"
 echo "=== Building shield=$SHIELD board=$BOARD ==="
 echo "=== Build dir: $BUILD_DIR ==="
 
-west build -s zmk/app -d "$BUILD_DIR" -b "$BOARD" -- \
+SNIPPET_ARGS=()
+CMAKE_EXTRA=()
+if [ -n "$SNIPPET" ]; then
+    SNIPPET_ARGS=(-S "$SNIPPET")
+    CMAKE_EXTRA+=(-DCONFIG_ZMK_STUDIO=y)
+fi
+
+west build -s zmk/app -d "$BUILD_DIR" -b "$BOARD" "${SNIPPET_ARGS[@]}" -- \
     -DZMK_CONFIG="$SCRIPT_DIR/config" \
     -DSHIELD="$SHIELD" \
     -DZMK_EXTRA_MODULES="$STAGING_DIR" \
+    "${CMAKE_EXTRA[@]}" \
     2>&1
