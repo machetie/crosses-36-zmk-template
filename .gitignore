@@ -1,0 +1,10 @@
+# Local west workspace artifacts (not committed — west init/update creates these)
+.west/
+build/
+modules/
+optional/
+zephyr/
+zmk/
+zmk-dongle-screen/
+zmk-input-processor-xyz/
+zmk-report-rate-limit/
