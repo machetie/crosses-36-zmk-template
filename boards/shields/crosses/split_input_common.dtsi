@@ -23,21 +23,21 @@
         };
     };
 
-    // Left trackball listener — cursor movement on all layers (dongle enables this)
+    // Left trackball listener — scroll only on all layers (dongle enables this)
     trackball_left_listener: trackball_left_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
         device = <&trackball_peripheral_split>;
-        input-processors = <&zip_ble_report_rate_limit>;
+        input-processors
+            = <&zip_xy_to_scroll_mapper>
+            , <&zip_scroll_scaler 1 4>;
     };
 
-    // Right trackball listener — scroll only on all layers (dongle enables this)
+    // Right trackball listener — cursor movement on all layers (dongle enables this)
     trackball_right_listener: trackball_right_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
         device = <&trackball_right_split>;
-        input-processors
-            = <&zip_xy_to_scroll_mapper>
-            , <&zip_scroll_scaler 1 4>;
+        input-processors = <&zip_ble_report_rate_limit>;
     };
 };
