@@ -1,0 +1,23 @@
+if SHIELD_CROSSES_DONGLE_BIOS
+config ZMK_SPLIT
+    default y
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+config ZMK_USB
+    default y
+# Pointing intentionally left disabled for this variant: removes the mouse
+# HID collection so the composite descriptor is keyboard+consumer only,
+# which some BIOS/UEFI implementations handle more reliably.
+config ZMK_POINTING
+    default n
+config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
+    default 2
+# Sized to fit ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS (2) + 5 host BT profiles,
+# matching the carrefinho/prospector dongle reference.
+config BT_MAX_CONN
+    default 7
+config BT_MAX_PAIRED
+    default 7
+config ZMK_KEYBOARD_NAME
+    default "Crosses BIOS"
+endif

@@ -1,0 +1,11 @@
+file_format: "1"
+id: crosses_dongle_bios
+name: Crosses Dongle (BIOS)
+type: shield
+url: https://github.com/Good-Great-Grand-Wonderful/crosses
+requires: [xiao_ble]
+features:
+  - keys
+outputs:
+  - usb
+  - ble

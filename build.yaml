@@ -14,6 +14,10 @@ include:
     cmake-args: -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=y
     artifact-name: crosses_dongle_boot
   - board: xiao_ble//zmk
+    shield: crosses_dongle_bios
+    cmake-args: -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=y
+    artifact-name: crosses_dongle_bios
+  - board: xiao_ble//zmk
     shield: settings_reset
   - board: nice_nano@2//zmk
     shield: settings_reset
