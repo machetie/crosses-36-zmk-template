@@ -21,7 +21,7 @@ manifest:
       revision: zmk-0.4
       path: modules/zmk-pmw3610-driver-badjeff
     - name: zmk-report-rate-limit
-      remote: efogdev
+      remote: machetie
       revision: main
     - name: zmk-input-processor-xyz
       remote: badjeff
