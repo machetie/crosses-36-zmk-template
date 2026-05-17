@@ -18,7 +18,7 @@ manifest:
     - name: zmk-pmw3610-driver-badjeff
       remote: badjeff
       repo-path: zmk-pmw3610-driver
-      revision: zmk-0.4
+      revision: main
       path: modules/zmk-pmw3610-driver-badjeff
     - name: zmk-report-rate-limit
       remote: machetie
