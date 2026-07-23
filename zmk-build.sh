@@ -2,6 +2,7 @@
 # Quick local ZMK build helper for the crosses keyboard.
 #
 # Usage: ./zmk-build.sh <shield> [board] [snippet] [-- <extra cmake args>]
+#        ./zmk-build.sh --collect
 #
 # Examples:
 #   ./zmk-build.sh crosses_left
@@ -9,8 +10,37 @@
 #   ./zmk-build.sh "crosses_dongle dongle_screen" xiao_ble//zmk studio-rpc-usb-uart
 #   ./zmk-build.sh settings_reset xiao_ble//zmk
 #   ./zmk-build.sh settings_reset nice_nano@2//zmk
+#   ./zmk-build.sh --collect
 
 set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Collect all previously built zmk.uf2 files into a single firmware/ directory.
+collect_outputs() {
+    local output_dir="$SCRIPT_DIR/firmware"
+    echo "=== Collecting firmware outputs into $output_dir ==="
+    rm -rf "$output_dir"
+    mkdir -p "$output_dir"
+
+    local count=0
+    for uf2 in "$SCRIPT_DIR"/build/*/zephyr/zmk.uf2; do
+        [ -f "$uf2" ] || continue
+        local build_name
+        build_name=$(basename "$(dirname "$(dirname "$uf2")")")
+        local dest="$output_dir/${build_name}.uf2"
+        cp "$uf2" "$dest"
+        echo "  $build_name -> $dest"
+        count=$((count + 1))
+    done
+
+    echo "=== Collected $count firmware file(s) ==="
+}
+
+if [ "$1" = "--collect" ]; then
+    collect_outputs
+    exit 0
+fi
 
 SHIELD="${1:-crosses_left}"
 BOARD="${2:-nice_nano@2//zmk}"
@@ -25,7 +55,6 @@ fi
 
 BUILD_DIR="build/$(echo "$SHIELD" | tr ' ' '_')_$(echo "$BOARD" | tr '/@' '__')${SNIPPET:+_${SNIPPET//-/_}}"
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 VENV="$HOME/Documents/git/zmk-workspace-venv"
 
 export ZEPHYR_BASE="$SCRIPT_DIR/zephyr"
@@ -66,3 +95,5 @@ west build -s zmk/app -d "$BUILD_DIR" -b "$BOARD" "${SNIPPET_ARGS[@]}" -- \
     -DZMK_EXTRA_MODULES="$STAGING_DIR" \
     "${CMAKE_EXTRA[@]}" \
     2>&1
+
+echo "=== Build complete: $BUILD_DIR/zephyr/zmk.uf2 ==="

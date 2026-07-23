@@ -1,0 +1,14 @@
+# Local build outputs
+build/
+firmware/
+.west/
+
+# Zephyr / ZMK modules pulled by west
+zephyr/
+modules/
+optional/
+zmk/
+zmk-dongle-screen/
+zmk-input-processor-xyz/
+zmk-pmw3610-driver/
+zmk-report-rate-limit/
