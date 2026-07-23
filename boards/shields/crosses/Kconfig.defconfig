@@ -1,0 +1,21 @@
+# Copyright (c) 2025 Vincent Franco
+# SPDX-License-Identifier: MIT
+
+if SHIELD_CROSSES_RIGHT
+
+config ZMK_KEYBOARD_NAME
+  default "Crosses BT"
+
+# Central role removed for dongle mode - dongle is the central device
+# Uncomment below if using keyboard without dongle (direct BT to PC):
+# config ZMK_SPLIT_ROLE_CENTRAL
+#   default y
+
+endif
+
+if SHIELD_CROSSES_LEFT || SHIELD_CROSSES_RIGHT
+
+config ZMK_SPLIT
+  default y
+
+endif
