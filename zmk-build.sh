@@ -5,7 +5,7 @@
 #
 # Examples:
 #   ./zmk-build.sh crosses_left
-#   ./zmk-build.sh crosses_right nice_nano@2//zmk studio-rpc-usb-uart
+#   ./zmk-build.sh crosses_right
 #   ./zmk-build.sh "crosses_dongle dongle_screen" xiao_ble//zmk studio-rpc-usb-uart
 #   ./zmk-build.sh settings_reset xiao_ble//zmk
 #   ./zmk-build.sh settings_reset nice_nano@2//zmk
