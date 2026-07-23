@@ -8,6 +8,17 @@ zephyr/
 modules/
 optional/
 zmk/
+
+# Cormoran ZMK modules
+zmk-behavior-runtime-sensor-rotate/
+zmk-driver-pmw3610-with-custom-studio-rpc/
+zmk-feature-custom-settings/
+zmk-module-battery-history/
+zmk-module-ble-management/
+zmk-module-runtime-input-processor/
+zmk-module-settings-rpc/
+
+# Legacy modules kept during transition
 zmk-dongle-screen/
 zmk-input-processor-xyz/
 zmk-pmw3610-driver/

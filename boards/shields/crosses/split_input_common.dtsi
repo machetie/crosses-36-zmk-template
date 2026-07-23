@@ -24,20 +24,15 @@
         };
     };
 
-    // Left trackball listener — scroll only on all layers (dongle enables this).
-    // zip_report_rate_limit is first to throttle events before scroll processing.
+    // Left trackball listener — scroll on all layers (dongle enables this).
     trackball_left_listener: trackball_left_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
         device = <&trackball_peripheral_split>;
-        input-processors
-            = <&zip_report_rate_limit>
-            , <&zip_xy_to_scroll_mapper>
-            , <&zip_scroll_scaler 1 2>;
+        input-processors = <&zip_report_rate_limit &zip_xy_to_scroll_mapper>;
     };
 
     // Right trackball listener — cursor movement on all layers (dongle enables this).
-    // zip_report_rate_limit throttles cursor events on the dongle side.
     trackball_right_listener: trackball_right_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
