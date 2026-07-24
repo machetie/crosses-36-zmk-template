@@ -9,7 +9,6 @@ features:
   - keys
   - display
   - pointer
-  - studio
 siblings:
   - crosses_left
   - crosses_right

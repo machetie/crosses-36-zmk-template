@@ -1,0 +1,25 @@
+# Local build outputs
+build/
+firmware/
+.west/
+
+# Zephyr / ZMK modules pulled by west
+zephyr/
+zmk/
+modules/
+optional/
+
+# External ZMK modules
+zmk-dongle-screen/
+zmk-input-processor-xyz/
+zmk-pmw3610-driver/
+zmk-report-rate-limit/
+
+# Legacy cormoran ZMK modules
+zmk-behavior-runtime-sensor-rotate/
+zmk-driver-pmw3610-with-custom-studio-rpc/
+zmk-feature-custom-settings/
+zmk-module-battery-history/
+zmk-module-ble-management/
+zmk-module-runtime-input-processor/
+zmk-module-settings-rpc/
