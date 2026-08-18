@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Local ZMK build helper for the crosses keyboard.
 #
-# Usage: ./zmk-build.sh <shield> [board] [-- <extra cmake args>]
+# Usage: ./zmk-build.sh <shield> [board] [snippet] [-- <extra cmake args>]
+#        ./zmk-build.sh "crosses_dongle dongle_screen" xiao_ble//zmk studio-rpc-usb-uart
 #        ./zmk-build.sh --collect
 
 set -e
@@ -37,13 +38,23 @@ SHIELD="${1:-crosses_left}"
 BOARD="${2:-nice_nano@2//zmk}"
 set -- "${@:3}"
 
+SNIPPET=""
 CMAKE_EXTRA=()
-if [ "$1" = "--" ]; then
-    shift
-    CMAKE_EXTRA+=("$@")
+if [ $# -gt 0 ]; then
+    if [ "$1" = "--" ]; then
+        shift
+        CMAKE_EXTRA+=("$@")
+    else
+        SNIPPET="$1"
+        shift
+        if [ $# -gt 0 ] && [ "$1" = "--" ]; then
+            shift
+            CMAKE_EXTRA+=("$@")
+        fi
+    fi
 fi
 
-BUILD_DIR="build/$(echo "$SHIELD" | tr ' ' '_')_$(echo "$BOARD" | tr '/@' '__')"
+BUILD_DIR="build/$(echo "$SHIELD" | tr ' ' '_')_$(echo "$BOARD" | tr '/@' '__')${SNIPPET:+_$(echo "$SNIPPET" | tr '/@' '__')}"
 
 VENV="$HOME/Documents/git/zmk-workspace-venv"
 
@@ -63,13 +74,19 @@ echo "=== Preparing module staging dir for ZMK_EXTRA_MODULES ==="
 rm -rf "$STAGING_DIR"
 git -C "$SCRIPT_DIR" checkout-index -a --prefix="$STAGING_DIR/"
 
-echo "=== Building shield=$SHIELD board=$BOARD ==="
+echo "=== Building shield=$SHIELD board=$BOARD ${SNIPPET:+snippet=$SNIPPET }==="
 echo "=== Build dir: $BUILD_DIR ==="
 
-west build -s zmk/app -d "$BUILD_DIR" -b "$BOARD" -- \
+STUDIO_CMAKE_ARGS=()
+if [ -n "$SNIPPET" ]; then
+    STUDIO_CMAKE_ARGS+=(-DCONFIG_ZMK_STUDIO=y)
+fi
+
+west build -s zmk/app -d "$BUILD_DIR" -b "$BOARD" ${SNIPPET:+-S "$SNIPPET"} -- \
     -DZMK_CONFIG="$SCRIPT_DIR/config" \
     -DSHIELD="$SHIELD" \
     -DZMK_EXTRA_MODULES="$STAGING_DIR" \
+    "${STUDIO_CMAKE_ARGS[@]}" \
     "${CMAKE_EXTRA[@]}" \
     2>&1
 

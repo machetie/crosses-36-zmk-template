@@ -54,6 +54,14 @@
 		};
   };
 
+  // Auto-mouse layer processor (upstream Temporary Layer Input Processor)
+  /omit-if-no-ref/ aml: aml {
+    compatible = "zmk,input-processor-temp-layer";
+    #input-processor-cells = <2>;
+    require-prior-idle-ms = <250>;
+    excluded-positions = <3 11 12 13 23>;
+  };
+
   //left hand trackball split (reg 0)
   split_inputs {
     #address-cells = <1>;

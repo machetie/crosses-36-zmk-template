@@ -24,6 +24,7 @@ Use the local helper:
 ```bash
 ./zmk-build.sh crosses_left
 ./zmk-build.sh crosses_right
+./zmk-build.sh "crosses_dongle dongle_screen" xiao_ble//zmk studio-rpc-usb-uart
 ./zmk-build.sh "crosses_dongle dongle_screen" xiao_ble//zmk
 ./zmk-build.sh settings_reset nice_nano@2//zmk
 ./zmk-build.sh settings_reset xiao_ble//zmk
@@ -52,7 +53,7 @@ The script stages git-tracked files into `build/.module-staging` so `ZMK_EXTRA_M
 | `build.yaml` | GitHub Actions / CI build matrix |
 | `config/crosses.keymap` | Keymap shared by halves and dongle |
 | `config/crosses.conf` | Common Kconfig (applied to all shields) |
-| `config/crosses_dongle.conf` | Dongle-specific Kconfig (display, USB, pointing) |
+| `boards/shields/crosses_dongle/crosses_dongle.conf` | Dongle-specific Kconfig (display, USB, pointing) |
 | `boards/shields/crosses/` | Left/right shield overlays and configs |
 | `boards/shields/crosses_dongle/` | Dongle shield overlay |
 | `zephyr/module.yml` | Tells Zephyr this repo is a module with `board_root: .` |
@@ -60,15 +61,15 @@ The script stages git-tracked files into `build/.module-staging` so `ZMK_EXTRA_M
 
 ## Known decisions / pitfalls
 
-- **No ZMK Studio on `dev/dongle`**. It was stripped to keep the build simple and upstream-compatible. If Studio is requested, create a separate branch from `main` or add it carefully and verify dongle RAM usage.
-- **Dongle RAM usage is ~85%** in the current config. If the dongle crashes or behaves strangely under load, reduce `CONFIG_LV_Z_VDB_SIZE` to free RAM.
+- **`dev/dongle` has both USB HID boot and ZMK Studio support**, split into two build artifacts: `crosses_dongle_studio` (CDC/ACM RPC for Studio) and `crosses_dongle_bios` (plain 6KRO boot-protocol HID). They are separate because the Studio RPC snippet turns USB into a composite CDC+HID device, which most BIOS/UEFI firmware cannot use for keyboard input.
+- **Dongle RAM usage is ~85% for the BIOS target and ~89% for the Studio target**. If the dongle crashes or behaves strangely under load, reduce `CONFIG_LV_Z_VDB_SIZE` to free RAM.
 - **BLE pairing failures** are almost always caused by `BT_MAX_CONN` / `BT_MAX_PAIRED` being too low on the central, or by stale bonds. Use `settings_reset` and reflash all devices from the same build.
 - **Per-shield Kconfig warnings** (e.g., `ZMK_USB`, `ZMK_POINTING_SMOOTH_SCROLLING`, `ZMK_SPLIT_BLE_CENTRAL_BATTERY_*` being ignored on peripherals) are expected because `config/crosses.conf` applies to all shields. They do not break the build.
 
 ## Verification checklist for changes
 
 1. Run `west update` if `config/west.yml` changed.
-2. Build all five targets with `./zmk-build.sh`.
-3. Run `./zmk-build.sh --collect` and confirm 5 `.uf2` files in `firmware/`.
+2. Build all six targets with `./zmk-build.sh` (left, right, dongle BIOS, dongle Studio, settings_reset for both boards).
+3. Run `./zmk-build.sh --collect` and confirm 6 `.uf2` files in `firmware/` (left, right, dongle BIOS, dongle Studio, and two settings_reset targets).
 4. For dongle changes, check the RAM percentage at link time (keep below ~90%).
 5. For pairing issues: settings-reset all devices, reflash, power-cycle dongle first then halves.
