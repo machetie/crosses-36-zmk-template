@@ -13,6 +13,12 @@ include:
     shield: crosses_dongle dongle_screen
     cmake-args: -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=y
     artifact-name: crosses_dongle_bios
+  # Debug only: dongle with ZMK log output on USB serial (/dev/ttyACM0).
+  - board: xiao_ble//zmk
+    shield: crosses_dongle dongle_screen
+    snippet: zmk-usb-logging
+    cmake-args: -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=y -DCONFIG_ZMK_LOGGING_MINIMAL=n
+    artifact-name: crosses_dongle_debug_log
   - board: xiao_ble//zmk
     shield: settings_reset
   - board: nice_nano@2//zmk
