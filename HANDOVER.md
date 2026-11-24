@@ -9,7 +9,15 @@ Date: 2026-11-24. Repo: `machetie/crosses-36-zmk-template`. Read `AGENTS.md` fir
 - Both halves are BLE split **peripherals**; the dongle is the **central** and talks to the computer over USB.
 - The user is on Linux. The dongle is plugged into a Dell WD19 dock. In `lsusb` it shows as `1d50:615e OpenMoko, Inc. Crosses`.
 
-## Current problem (unresolved)
+## Resolved (2026-11-24)
+
+The user reflashed **only the dongle** from CI run 68 and everything works: keys, trackballs and the dongle screen. The halves are still on run 66 firmware (0 dBm TX power), so **TX power was not the cause**. The dongle config in runs 66 and 68 is the same, so the likely cause was the dongle's pairing/bond state getting out of sync with the halves after the settings resets. Reflashing the dongle last fixed it.
+
+- If this happens again: `settings_reset` all three, flash the halves, then flash the dongle **last**, then power-cycle the dongle first.
+- `725ec2e` (TX back to +8 dBm) is still on the branch. That is the safer default, but 0 dBm on run 66 is working on the user's desk.
+- The `crosses_dongle_debug_log` target in `build.yaml` can be removed once the setup has been stable for a while.
+
+## Original problem (kept for reference)
 
 After flashing `yolo` firmware (CI run 66) to all three devices:
 
