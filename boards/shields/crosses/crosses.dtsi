@@ -6,7 +6,6 @@
 #include <dt-bindings/zmk/input_transform.h>
 #include <input/processors.dtsi>
 #include <input/processors/report_rate_limit.dtsi>
-#include <behaviors/rate_limit.dtsi>
 
 #include "thirty_six_layout.dtsi"
 
@@ -45,13 +44,6 @@
       , <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
       , <&pro_micro 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
       ;
-  };
-
-	behaviors {
-    rrl {
-      #binding-cells = <1>;
-      values-ms = <8 6 4 2>;
-		};
   };
 
   // Auto-mouse layer processor (upstream Temporary Layer Input Processor)
