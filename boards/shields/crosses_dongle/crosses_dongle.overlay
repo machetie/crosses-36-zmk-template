@@ -40,20 +40,32 @@
         };
     };
 
-    // Listener for left half trackball
+    // Left half trackball = scroll wheel.
+    // No auto-mouse here, so scrolling never switches layers.
     trackball_left_listener: trackball_left_listener {
         compatible = "zmk,input-listener";
         status = "okay";
         device = <&trackball_peripheral_split>;
-        input-processors = <&aml 3 3000>;
+        input-processors
+            = <&zip_xy_to_scroll_mapper>
+            , <&zip_scroll_scaler 1 2>;
     };
 
-    // Listener for right half trackball
+    // Right half trackball = pointer.
+    // Moving it activates Nav (layer 3, which holds the mouse buttons) for 3 s.
     trackball_right_listener: trackball_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
         device = <&trackball_right_split>;
         input-processors = <&aml 3 3000>;
+
+        // Precision mode: while Sym (layer 2, hold SPACE) is active, the
+        // pointer moves at 1/3 speed. process-next lets auto-mouse still run.
+        precision {
+            layers = <2>;
+            input-processors = <&zip_xy_scaler 1 3>;
+            process-next;
+        };
     };
 
     thirty_six_transform: keymap_transform_dongle {

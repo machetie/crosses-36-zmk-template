@@ -38,13 +38,13 @@
   };
 };
 
-// Overrides for the input-split child node
+// Left half sends raw X/Y via trackball_peripheral_split (reg 0) to the dongle.
+// Scroll mapping happens on the dongle (crosses_dongle.overlay), so tuning
+// only needs a dongle flash. Only the rate limiter runs here, to keep the
+// BLE link from being flooded.
 &trackball_peripheral_split {
   device = <&trackball_peripheral>;
-  input-processors
-    = <&zip_xy_to_scroll_mapper>
-    , <&zip_scroll_scaler 1 2>
-    , <&zip_ble_report_rate_limit>;
+  input-processors = <&zip_ble_report_rate_limit>;
 };
 
 // Disable right trackball split on left half (not used here)
