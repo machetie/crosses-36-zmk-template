@@ -8,9 +8,30 @@ ZMK firmware configuration for the **Crosses 36** split keyboard: two nice!nano 
 ## Branches
 
 - **`main`** — base keyboard config using upstream ZMK. Has the dongle target but historically included ZMK Studio.
-- **`dev/dongle`** — current working branch. Stripped ZMK Studio; uses `machetie/zmk-dongle-screen` for the dongle display and upstream ZMK modules.
+- **`dev/dongle`** — dongle working branch. Uses `machetie/zmk-dongle-screen` for the dongle display and upstream ZMK modules.
+- **`yolo`** — built on `dev/dongle`: pinned revisions, trackball processing on the dongle, power savings on the halves. See below.
 
 > Do **not** use `dev/dongle-reimplementation`. It was deleted because it set `BT_MAX_CONN=2` / `BT_MAX_PAIRED=2` on the central, which broke split peripheral pairing.
+
+## How the trackballs work (`yolo`)
+
+- Both halves are BLE split peripherals; the dongle is the central and talks to the computer over USB.
+- Each half sends **raw** trackball motion (rate-limited to one batch per 8 ms). All processing happens on the dongle, so retuning only needs a dongle flash.
+- **Left ball = scroll.** X/Y is mapped to wheel and halved. It never switches layers.
+- **Right ball = pointer.** Moving it turns on Nav (layer 3, which has the mouse buttons) for 3 s. Any other key turns it off early.
+- **Precision mode:** hold SPACE (Sym) and the pointer moves at 1/3 speed.
+- The halves' OLEDs are off, the right sensor isn't forced into high-performance mode, and BLE TX power is 0 dBm, all to save battery.
+- USB polling is 1000 Hz.
+
+| What to tune | Where |
+|---|---|
+| Scroll speed, precision speed, auto-mouse layer/timeout | `boards/shields/crosses_dongle/crosses_dongle.overlay` |
+| Sensor CPI, axis swap/invert | `boards/shields/crosses/crosses_left.overlay`, `crosses_right.overlay` |
+| Halves' Kconfig (sleep, BLE, OLED, sensor timing) | `boards/shields/crosses/crosses_halves.conf` (left/right `.conf` are symlinks to it) |
+| Dongle Kconfig | `boards/shields/crosses_dongle/crosses_dongle.conf` |
+| Settings for all three builds | `config/crosses.conf` (merged last, so it overrides the files above) |
+
+All revisions in `config/west.yml` and the CI workflow are pinned to commits; bump them on purpose.
 
 ## Hardware targets
 

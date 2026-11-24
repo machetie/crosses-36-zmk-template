@@ -12,7 +12,8 @@ This repo is a ZMK **config module**, not the ZMK source itself. The real ZMK, Z
 
 ## Active branch
 
-- **`dev/dongle`** — current working branch, pushed to `origin/dev/dongle`.
+- **`yolo`** — current working branch (based on `dev/dongle`): pinned revisions, trackball processing on the dongle.
+- **`dev/dongle`** — previous working branch, pushed to `origin/dev/dongle`.
 - **`main`** — base branch using upstream ZMK; use this as the starting point for new work.
 
 Avoid `dev/dongle-reimplementation`: it was deleted because it set `BT_MAX_CONN=2` / `BT_MAX_PAIRED=2` on the central dongle, which broke split peripheral pairing.
@@ -52,7 +53,8 @@ The script stages git-tracked files into `build/.module-staging` so `ZMK_EXTRA_M
 | `config/west.yml` | West manifest: ZMK commit, external modules |
 | `build.yaml` | GitHub Actions / CI build matrix |
 | `config/crosses.keymap` | Keymap shared by halves and dongle |
-| `config/crosses.conf` | Common Kconfig (applied to all shields) |
+| `config/crosses.conf` | Kconfig for all three builds; merged after shield confs, so it wins |
+| `boards/shields/crosses/crosses_halves.conf` | Halves-only Kconfig; `crosses_left/right.conf` are symlinks to it |
 | `boards/shields/crosses_dongle/crosses_dongle.conf` | Dongle-specific Kconfig (display, USB, pointing) |
 | `boards/shields/crosses/` | Left/right shield overlays and configs |
 | `boards/shields/crosses_dongle/` | Dongle shield overlay |
@@ -64,7 +66,9 @@ The script stages git-tracked files into `build/.module-staging` so `ZMK_EXTRA_M
 - **`dev/dongle` has both USB HID boot and ZMK Studio support**, split into two build artifacts: `crosses_dongle_studio` (CDC/ACM RPC for Studio) and `crosses_dongle_bios` (plain 6KRO boot-protocol HID). They are separate because the Studio RPC snippet turns USB into a composite CDC+HID device, which most BIOS/UEFI firmware cannot use for keyboard input.
 - **Dongle RAM usage is ~85% for the BIOS target and ~89% for the Studio target**. If the dongle crashes or behaves strangely under load, reduce `CONFIG_LV_Z_VDB_SIZE` to free RAM.
 - **BLE pairing failures** are almost always caused by `BT_MAX_CONN` / `BT_MAX_PAIRED` being too low on the central, or by stale bonds. Use `settings_reset` and reflash all devices from the same build.
-- **Per-shield Kconfig warnings** (e.g., `ZMK_USB`, `ZMK_POINTING_SMOOTH_SCROLLING`, `ZMK_SPLIT_BLE_CENTRAL_BATTERY_*` being ignored on peripherals) are expected because `config/crosses.conf` applies to all shields. They do not break the build.
+- **Kconfig placement:** `config/crosses.conf` applies to the halves and the dongle and is merged last. Put role-specific options in `crosses_halves.conf` or `crosses_dongle.conf`, never there.
+- **Trackball processing runs on the dongle** (`crosses_dongle.overlay` listeners). The halves only rate-limit and forward raw X/Y.
+- **Revisions are pinned** in `config/west.yml` and `.github/workflows/build.yml`. Bump them deliberately.
 
 ## Verification checklist for changes
 
