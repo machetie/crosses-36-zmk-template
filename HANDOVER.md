@@ -11,7 +11,12 @@ Date: 2026-11-24. Repo: `machetie/crosses-36-zmk-template`. Read `AGENTS.md` fir
 
 ## Resolved (2026-11-24)
 
-The user reflashed **only the dongle** from CI run 68 and everything works: keys, trackballs and the dongle screen. The halves are still on run 66 firmware (0 dBm TX power), so **TX power was not the cause**. The dongle config in runs 66 and 68 is the same, so the likely cause was the dongle's pairing/bond state getting out of sync with the halves after the settings resets. Reflashing the dongle last fixed it.
+The user reflashed **only the dongle** from CI run 68 and everything works: keys, trackballs and the dongle screen. Two things changed at once, though: the run (66 → 68) **and the artifact (`crosses_dongle_studio` → `crosses_dongle_bios`)**. The halves are still on run 66 firmware (0 dBm), so TX power was not the cause. The dongle config is identical between runs 66 and 68, so the cause is one of:
+
+1. the dongle's bond state being out of sync after the settings resets (reflashing cleared it), or
+2. a problem with the **Studio** dongle build. Its RAM is 89.1% (BIOS: 84.8%), and it adds Studio RPC over USB-UART **and BLE**, plus `ZMK_STUDIO_LOCKING=y`. No smoking gun in the build log.
+
+To tell them apart: flash `crosses_dongle_studio` from the same run onto the dongle. If input breaks again, it's the Studio build. Debug it with a Studio build plus `-DCONFIG_ZMK_STUDIO_TRANSPORT_BLE=n`, and/or by freeing RAM (`CONFIG_LV_Z_VDB_SIZE`).
 
 - If this happens again: `settings_reset` all three, flash the halves, then flash the dongle **last**, then power-cycle the dongle first.
 - `725ec2e` (TX back to +8 dBm) is still on the branch. That is the safer default, but 0 dBm on run 66 is working on the user's desk.
