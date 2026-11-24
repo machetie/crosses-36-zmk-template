@@ -1,30 +1,26 @@
 manifest:
-  defaults:
-    revision: main
   remotes:
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
     - name: efogdev
       url-base: https://github.com/efogdev
-    - name: badjeff
-      url-base: https://github.com/badjeff
     - name: machetie
       url-base: https://github.com/machetie
   projects:
+    # All revisions are pinned to the commits of the last known-good build
+    # (dev/dongle, Aug 2026). Bump them deliberately, one at a time.
     - name: zmk
       remote: zmkfirmware
+      revision: 6e2ef41e022d555b10f116e395832913f71717b3
       import: app/west.yml
     - name: zmk-pmw3610-driver
       remote: efogdev
-      revision: zephyr-4.1
+      revision: 38105b4f09d6d5b94ef5a3073428719e3c356af1
     - name: zmk-report-rate-limit
       remote: machetie
-      revision: main
-    - name: zmk-input-processor-xyz
-      remote: badjeff
-      revision: main
+      revision: 06ba1e5d14bf4821d12d7cb101bbef86e46804c3
     - name: zmk-dongle-screen
       remote: machetie
-      revision: main
+      revision: 02c78a7dadedbe0a83397b2042b7526ab944c1d6
   self:
     path: config
